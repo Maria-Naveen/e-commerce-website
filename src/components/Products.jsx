@@ -1,29 +1,27 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchData } from "../slices/apiData"; //async API call
+import { useParams } from "react-router-dom";
 
 const Products = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
+  const { categoryName } = useParams();
 
   useEffect(() => {
     dispatch(fetchData());
   }, []);
 
-  const jewelery = products.filter((prod) => prod.category === "jewelery");
-  const mensClothing = products.filter(
-    (prod) => prod.category === "men's clothing"
-  );
-  const electronics = products.filter(
-    (prod) => prod.category === "electronics"
-  );
-  const womensClothing = products.filter(
-    (prod) => prod.category === "women's clothing"
-  );
+  const filteredProducts = categoryName
+    ? products.filter((prod) => prod.category === categoryName)
+    : products;
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3  gap-4 p-4 bg-green-200">
-      {womensClothing.map((product) => (
+      {filteredProducts.map((product) => (
         <div
           key={product.id}
           className="w-full flex flex-col items-center shadow-lg shadow-white-500/50"
