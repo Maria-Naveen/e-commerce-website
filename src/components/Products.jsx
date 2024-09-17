@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchData } from "../slices/apiData"; //async API call
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Products = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
   const { categoryName } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchData());
@@ -18,7 +18,7 @@ const Products = () => {
     : products;
 
   const handleProductClick = (id) => {
-    history.push(`/product/${id}`);
+    navigate(`/product/${id}`);
   };
 
   if (loading) return <p>Loading...</p>;
