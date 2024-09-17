@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Categories from "./components/Categories";
 import Products from "./components/Products";
+import ProductDetail from "./components/ProductDetail";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Products />} />
         <Route path="/category/:categoryName" element={<Products />} />
+        <Route path="/product/:productId" element={<ProductDetail />} />
       </Routes>
     </BrowserRouter>
   );

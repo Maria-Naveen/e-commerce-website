@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchData } from "../slices/apiData"; //async API call
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 const Products = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
   const { categoryName } = useParams();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(fetchData());
@@ -16,18 +17,23 @@ const Products = () => {
     ? products.filter((prod) => prod.category === categoryName)
     : products;
 
+  const handleProductClick = (id) => {
+    history.push(`/product/${id}`);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3  gap-4 p-4 bg-green-200">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
       {filteredProducts.map((product) => (
         <div
           key={product.id}
-          className="w-full flex flex-col items-center shadow-lg shadow-white-500/50"
+          className="flex flex-col items-center shadow-lg shadow-white-500/50"
+          onClick={() => handleProductClick(product.id)}
         >
           <img
-            className="w-1/2 h-44 object-cover"
+            className="w-full h-44 object-cover"
             src={product.image}
             alt={product.title}
           />
