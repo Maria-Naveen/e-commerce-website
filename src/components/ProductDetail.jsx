@@ -18,21 +18,27 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
       <img
-        className="w-full h-64 object-cover"
+        className="w-96 h-64 object-cover md:h-48"
         src={currentProduct.image}
         alt={currentProduct.title}
       />
-      <h1 className="mt-4 text-2xl font-bold">{currentProduct.title}</h1>
-      <p className="mt-2 text-lg">{currentProduct.price}</p>
-      <p className="mt-2">{currentProduct.category}</p>
-      <button
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-        onClick={handleAddToCart}
-      >
-        Add to Cart
-      </button>
+      <div className="p-4">
+        <h1 className="mt-4 text-2xl font-bold">{currentProduct.title}</h1>
+        <p>Rating: {currentProduct.rating.rate}</p>
+        <p>Total Reviews: {currentProduct.rating.count}</p>
+        <p className="mt-2 text-lg text-gray-500">
+          Price: {currentProduct.price}
+        </p>
+        <p>{currentProduct.description}</p>
+        <button
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          onClick={handleAddToCart}
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 };

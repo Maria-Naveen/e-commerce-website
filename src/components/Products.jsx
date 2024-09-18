@@ -29,7 +29,7 @@ const Products = () => {
       {filteredProducts.map((product) => (
         <div
           key={product.id}
-          className="flex flex-col items-center shadow-lg shadow-white-500/50"
+          className="flex flex-col items-center shadow-lg shadow-white-500/50 p-4"
           onClick={() => handleProductClick(product.id)}
         >
           <img
@@ -38,8 +38,11 @@ const Products = () => {
             alt={product.title}
           />
           <p className="mt-2 text-lg font-semibold">{product.title}</p>
-          <p>{product.price}</p>
-          <p>{product.category}</p>
+          <p>
+            <span className="text-blue-600 font-bold">Price:</span>{" "}
+            {product.price}
+          </p>
+          {/* <p>{product.category}</p> */}
         </div>
       ))}
     </div>

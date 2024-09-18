@@ -1,20 +1,27 @@
 import React from "react";
-import { IoCartOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Header = () => {
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+
   return (
-    <div className="p-4 flex justify-between items-center bg-blue-300">
-      <p>My E-Commerce</p>
-      <input
-        type="text"
-        className="w-1/4 bg-blue-100 py-2 pl-2 placeholder:italic placeholder:text-slate-800"
-        placeholder="Search..."
-      />
-      <button className="bg-blue-100 p-3">
-        <IoCartOutline className="text-xl" />
-      </button>
-      <button className="italic bg-blue-100 p-3">Go to Admin</button>
-    </div>
+    <header className="p-4 bg-blue-500 text-white flex justify-between items-center">
+      <h1 className="text-2xl font-bold">My Store</h1>
+      <nav>
+        <Link to="/" className="mr-4">
+          Home
+        </Link>
+        <Link to="/cart" className="relative">
+          Cart
+          {totalQuantity > 0 && (
+            <span className="absolute top-0 right-0  bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+              {totalQuantity}
+            </span>
+          )}
+        </Link>
+      </nav>
+    </header>
   );
 };
 
