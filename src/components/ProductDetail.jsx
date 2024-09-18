@@ -18,20 +18,26 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="p-4 max-w-sm mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
-      <img
-        className="w-96 h-64 object-cover md:h-48"
-        src={currentProduct.image}
-        alt={currentProduct.title}
-      />
-      <div className="p-4">
+    <div className="flex flex-col md:flex-row items-center p-4">
+      <div className="w-full md:w-1/4 mb-4 md:mb-0 text-center p-5 ">
+        <img
+          className="w-64 h-64 p-6 mx-auto"
+          src={currentProduct.image}
+          alt={currentProduct.title}
+        />
+        <p className="mt-2 text-blue-500">
+          Rating: {currentProduct.rating.rate}
+        </p>
+        <p className="text-blue-500">
+          Total Reviews: {currentProduct.rating.count}
+        </p>
+      </div>
+      <div className="w-full md:w-3/4 md:pl-4 p-4s">
         <h1 className="mt-4 text-2xl font-bold">{currentProduct.title}</h1>
-        <p>Rating: {currentProduct.rating.rate}</p>
-        <p>Total Reviews: {currentProduct.rating.count}</p>
         <p className="mt-2 text-lg text-gray-500">
           Price: {currentProduct.price}
         </p>
-        <p>{currentProduct.description}</p>
+        <p className="mt-2 text-gray-700">{currentProduct.description}</p>
         <button
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
           onClick={handleAddToCart}

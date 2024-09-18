@@ -13,9 +13,22 @@ const Products = () => {
     dispatch(fetchData());
   }, []);
 
+  const shuffleArray = (array) => {
+    // Create a shallow copy of the array to avoid modifying the original array
+    const newArray = [...array];
+
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
+
   const filteredProducts = categoryName
     ? products.filter((prod) => prod.category === categoryName)
     : products;
+
+  const randomProducts = shuffleArray(filteredProducts).slice(0, 10);
 
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
@@ -26,7 +39,7 @@ const Products = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
-      {filteredProducts.map((product) => (
+      {randomProducts.map((product) => (
         <div
           key={product.id}
           className="flex flex-col items-center shadow-lg shadow-white-500/50 p-4"
@@ -42,7 +55,6 @@ const Products = () => {
             <span className="text-blue-600 font-bold">Price:</span>{" "}
             {product.price}
           </p>
-          {/* <p>{product.category}</p> */}
         </div>
       ))}
     </div>
