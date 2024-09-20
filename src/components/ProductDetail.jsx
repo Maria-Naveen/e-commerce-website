@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "../slices/cartSlice"; // Import the addToCart action
@@ -9,16 +11,36 @@ const ProductDetail = () => {
   const products = useSelector((state) => state.products.products);
   const currentProduct = products.find((prod) => prod.id === +productId);
 
-  console.log(currentProduct);
+  // console.log(currentProduct);
+  const [isAdded, setIsAdded] = useState(false);
 
   if (!currentProduct) return <p>Product not found</p>;
 
   const handleAddToCart = () => {
-    dispatch(addToCart(currentProduct));
+    if (!isAdded) {
+      dispatch(addToCart(currentProduct));
+      setIsAdded(true); // Mark as added
+      toast.success(`${currentProduct.title} has been added to your cart!`);
+    } else {
+      toast.info(`${currentProduct.title} is already in your cart.`);
+    }
   };
 
   return (
     <div className="flex flex-col md:flex-row items-center p-4">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition:Bounce
+      />
       <div className="w-full md:w-1/4 mb-4 md:mb-0 text-center p-5 ">
         <img
           className="w-64 h-64 p-6 mx-auto"
