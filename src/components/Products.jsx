@@ -58,7 +58,6 @@ const Products = () => {
             {product.price}
           </p>
           <div className="absolute inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
-            {/* <p className="text-gray-700">{product.description}</p> */}
             <p className="mt-2 text-gray-600">Rating: {product.rating.rate}</p>
             <p className="text-gray-600">
               Total Reviews: {product.rating.count}

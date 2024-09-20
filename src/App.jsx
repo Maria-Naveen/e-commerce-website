@@ -5,17 +5,29 @@ import Categories from "./components/Categories";
 import Products from "./components/Products";
 import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
+import Login from "./components/Login";
+import ProtectedLayout from "./components/ProtectedLayout";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Header></Header>
-      <Categories></Categories>
       <Routes>
-        <Route path="/" element={<Products />} />
-        <Route path="/category/:categoryName" element={<Products />} />
-        <Route path="/product/:productId" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />}></Route>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedLayout>
+              <Header />
+              <Categories />
+              <Routes>
+                <Route path="/" element={<Products />} />
+                <Route path="/category/:categoryName" element={<Products />} />
+                <Route path="/product/:productId" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+              </Routes>
+            </ProtectedLayout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
