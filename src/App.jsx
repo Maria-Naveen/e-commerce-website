@@ -6,6 +6,7 @@ import Products from "./components/Products";
 import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart";
 import Login from "./components/Login";
+import Order from "./components/Order";
 import ProtectedLayout from "./components/ProtectedLayout";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/category/:categoryName" element={<Products />} />
                 <Route path="/product/:productId" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/orders" element={<Order />}></Route>
               </Routes>
             </ProtectedLayout>
           }

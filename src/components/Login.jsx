@@ -29,6 +29,7 @@ const Login = () => {
       setTimeout(() => {
         sessionStorage.removeItem("isLoggedIn");
       }, 15 * 60 * 1000);
+
       setTimeout(() => {
         navigate("/");
       }, 1000); // Redirect to home page after successful login
