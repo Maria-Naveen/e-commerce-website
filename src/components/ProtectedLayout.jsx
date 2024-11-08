@@ -1,10 +1,22 @@
+// ProtectedLayout.jsx
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import Header from "./Header";
+import Categories from "./Categories";
 
-const ProtectedLayout = ({ children }) => {
-  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-
-  return isLoggedIn ? children : <Navigate to="/login" />;
+const ProtectedLayout = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return <Navigate to={"/login"} />;
+  } else {
+    return (
+      <>
+        <Header />
+        <Categories />
+        <Outlet />
+      </>
+    );
+  }
 };
 
 export default ProtectedLayout;

@@ -1,40 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast, Bounce } from "react-toastify"; // Import Bounce
-
+import React, { useState } from "react";
+import { useNavigate, Link, Navigate } from "react-router-dom";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 import LoginImage from "../assets/login.svg";
+import { loginUser } from "../api/authService";
+import { useDispatch } from "react-redux";
+import { fetchData } from "../slices/apiData"; // Import your fetchData action
+import SyncLoader from "react-spinners/SyncLoader"; // Import SyncLoader
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
+  const [showSpinner, setShowSpinner] = useState(false); // State to control spinner visibility
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Initialize dispatch
 
-  // The following checks whether the user is already logged in. If true, it redirects them to the home page.
-  useEffect(() => {
-    const alreadyLoggedIn = sessionStorage.getItem("isLoggedIn");
-    if (alreadyLoggedIn) {
-      navigate("/");
-    }
-  }, [navigate]);
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to={"/products"} />;
+    // Redirect to products if already logged in
+  }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    if (loading) return; // Prevent further submissions if loading
 
-    // Login logic
-    if (username === "Naveen" && password === "Naveen") {
-      toast.success("Welcome!");
-      sessionStorage.setItem("isLoggedIn", "true");
+    setLoading(true); // Start loading
+    setShowSpinner(true); // Immediately show the spinner
 
-      // Set timeout to clear the session after 15 mins
-      setTimeout(() => {
-        sessionStorage.removeItem("isLoggedIn");
-      }, 15 * 60 * 1000);
+    try {
+      const { token } = await loginUser(email, password);
+      localStorage.setItem("token", token); // Store token securely
+      toast.success("Welcome back!");
 
-      setTimeout(() => {
-        navigate("/");
-      }, 1000); // Redirect to home page after successful login
-    } else {
-      toast.error("Invalid login credentials");
+      // Dispatch fetchData to load products after successful login
+      await dispatch(fetchData()); // Ensure fetchData is awaited if it returns a promise
+
+      // Navigate to products page after successful login
+      navigate("/products");
+    } catch (error) {
+      toast.error("Login failed. Please check your credentials and try again.");
+    } finally {
+      setLoading(false); // End loading
+      setShowSpinner(false); // Hide spinner if it was shown
     }
   };
 
@@ -43,15 +51,7 @@ const Login = () => {
       <ToastContainer
         position="top-right"
         autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce} // Corrected transition property
+        transition={Bounce}
       />
       <img
         src={LoginImage}
@@ -61,35 +61,55 @@ const Login = () => {
       <div className="flex flex-col items-center md:items-start p-6">
         <h1 className="text-xl font-bold mb-4">MyStore Login</h1>
         <form onSubmit={handleLogin} className="flex flex-col w-full max-w-sm">
-          <label htmlFor="username" className="mb-1">
-            Username:
+          <label htmlFor="email" className="mb-1">
+            Email:
           </label>
           <input
-            type="text"
-            name="username"
+            type="email"
+            name="email"
             className="w-full p-2 rounded mb-4"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading} // Disable input while loading
           />
-          <label htmlFor="pass" className="mb-1">
+          <label htmlFor="password" className="mb-1">
             Password:
           </label>
           <input
             type="password"
-            name="pass"
+            name="password"
             className="w-full p-2 rounded mb-4"
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading} // Disable input while loading
           />
           <button
             type="submit"
             className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200"
+            disabled={loading} // Disable button while loading
           >
-            Login
+            {loading ? "Loading..." : "Login"} {/* Show loading text */}
           </button>
         </form>
+        {showSpinner && (
+          <div className="flex justify-center mt-4">
+            <SyncLoader
+              color={"#0096FF"}
+              loading={showSpinner}
+              size={10} // Size of the loader
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        )}
+        <p className="mt-4">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-blue -500 underline">
+            Register here
+          </Link>
+        </p>
       </div>
     </div>
   );
