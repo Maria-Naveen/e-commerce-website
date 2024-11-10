@@ -6,10 +6,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "../slices/cartSlice"; // Import the addToCart action
 
 const ProductDetail = () => {
-  const { productId } = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
-  const currentProduct = products.find((prod) => prod.id === +productId);
+  const currentProduct = products.find((prod) => prod.id === id);
 
   // console.log(currentProduct);
   const [isAdded, setIsAdded] = useState(false);

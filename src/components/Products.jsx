@@ -31,6 +31,7 @@ const Products = () => {
   const randomProducts = shuffleArray(filteredProducts).slice(0, 10);
 
   const handleProductClick = (id) => {
+    console.log(id);
     navigate(`/product/${id}`);
   };
 

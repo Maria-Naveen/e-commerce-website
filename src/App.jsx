@@ -24,7 +24,7 @@ const App = () => {
         <Route element={<ProtectedLayout />}>
           <Route index path="/products" element={<Products />} />
           <Route path="/category/:categoryName" element={<Products />} />
-          <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<Order />} />
         </Route>
