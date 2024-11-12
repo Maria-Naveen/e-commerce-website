@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { fetchUserCart, deleteCartItem, placeCartOrder } from "./cartThunk";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -63,6 +64,42 @@ const cartSlice = createSlice({
       state.totalQuantity = 0;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserCart.fulfilled, (state, action) => {
+        state.loading = false;
+        const cartDetails = action.payload;
+        state.items = cartDetails.items; // Populate with items from the backend
+        state.totalQuantity = cartDetails.totalQuantity;
+        state.orders = cartDetails.orders; // Populate orders if needed
+      })
+      .addCase(fetchUserCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Set error message
+      })
+      .addCase(deleteCartItem.fulfilled, (state, action) => {
+        const id = action.payload;
+        state.items = state.items.filter((item) => item.id !== id);
+        state.totalQuantity = state.items.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+      })
+      .addCase(placeCartOrder.fulfilled, (state, action) => {
+        // Clear cart items and add items to orders state
+        const orderDetails = action.payload;
+        state.orders.items.push(...state.items);
+        state.orders.totalAmount += orderDetails.totalAmount;
+        state.items = [];
+        state.totalQuantity = 0;
+      })
+      .addCase(placeCartOrder.rejected, (state, action) => {
+        state.error = action.payload;
+      });
+  },
 });
 
 export const {
@@ -72,4 +109,5 @@ export const {
   decrementQuantity,
   placeOrder,
 } = cartSlice.actions;
+
 export default cartSlice.reducer;
