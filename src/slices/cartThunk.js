@@ -36,7 +36,7 @@ export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
   async ({ productId, quantity }, { getState }) => {
     const token = localStorage.getItem("token");
-
+    console.log("Product Id:", productId);
     const response = await axios.patch(
       "http://localhost:3000/api/cart", // Your backend update route
       { productId, quantity },
@@ -53,6 +53,7 @@ export const updateCartQuantity = createAsyncThunk(
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ id, token }, { rejectWithValue }) => {
+    console.log(id);
     try {
       await axios.delete(`http://localhost:3000/api/cart/${id}`, {
         headers: { Authorization: `Bearer ${token}` },

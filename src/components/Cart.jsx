@@ -1,15 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  incrementQuantity,
-  decrementQuantity,
-  removeFromCart,
-} from "../slices/cartSlice";
+import { GridLoader } from "react-spinners";
 import {
   fetchUserCart,
   deleteCartItem,
   placeCartOrder,
+  updateCartQuantity,
 } from "../slices/cartThunk";
 
 const Cart = () => {
@@ -19,6 +16,7 @@ const Cart = () => {
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const loading = useSelector((state) => state.cart.loading);
   const error = useSelector((state) => state.cart.error);
+  const [loadingItem, setLoadingItem] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -26,24 +24,27 @@ const Cart = () => {
     if (token) {
       dispatch(fetchUserCart(token)); // Fetch the cart details on mount
     }
-  }, [dispatch, token]);
+  }, [dispatch, token, loadingItem]);
 
-  const handleIncrementQuantity = (id) => {
-    dispatch(incrementQuantity(id));
-  };
-
-  const handleDecrementQuantity = (id) => {
-    dispatch(decrementQuantity(id));
+  const handleUpdateQuantity = async (id, newQuantity) => {
+    if (newQuantity > 0) {
+      setLoadingItem(id); // Show spinner for this item
+      await dispatch(
+        updateCartQuantity({ productId: id, quantity: newQuantity })
+      );
+      setLoadingItem(null); // Hide spinner after update
+    } else {
+      alert("Quantity must be greater than zero.");
+    }
   };
 
   const handleRemoveItem = (id) => {
-    // Dispatch thunk to remove item from both backend and Redux state
     dispatch(deleteCartItem({ id, token }));
   };
 
   const handlePlaceOrder = async () => {
     try {
-      await dispatch(placeCartOrder(token)).unwrap(); // Place order via backend
+      await dispatch(placeCartOrder(token)).unwrap();
       alert("Your order has been placed!");
       navigate("/orders");
     } catch (err) {
@@ -70,29 +71,46 @@ const Cart = () => {
         <>
           {cartItems.map((item) => (
             <div
-              key={item.id}
+              key={item.customId}
               className="flex items-center justify-between p-2 border-b"
             >
               <div>
-                <h3 className="text-lg font-semibold">{item.title}</h3>
+                <h3 className="text-lg font-semibold">
+                  {item.productId.title}
+                </h3>
                 <p>
-                  {item.price} x {item.quantity} = {item.totalPrice}
+                  {item.productId.price} x {item.quantity} = {item.totalPrice}
                 </p>
               </div>
               <div className="flex items-center">
-                <button onClick={() => handleDecrementQuantity(item.id)}>
-                  -
-                </button>
-                <span className="mx-2">{item.quantity}</span>
-                <button onClick={() => handleIncrementQuantity(item.id)}>
-                  +
-                </button>
-                <button
-                  onClick={() => handleRemoveItem(item.id)}
-                  className="ml-4 text-red-500"
-                >
-                  Remove
-                </button>
+                {loadingItem === item.customId ? (
+                  <GridLoader color="#3498db" size={10} />
+                ) : (
+                  <>
+                    <button
+                      onClick={() =>
+                        handleUpdateQuantity(item.customId, item.quantity - 1)
+                      }
+                      disabled={item.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className="mx-2">{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        handleUpdateQuantity(item.customId, item.quantity + 1)
+                      }
+                    >
+                      +
+                    </button>
+                    <button
+                      onClick={() => handleRemoveItem(item.customId)}
+                      className="ml-4 text-red-500"
+                    >
+                      Remove
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
